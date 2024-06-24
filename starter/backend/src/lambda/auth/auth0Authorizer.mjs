@@ -1,4 +1,3 @@
-import Axios from 'axios'
 import jsonwebtoken from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger.mjs'
 
@@ -23,8 +22,6 @@ KXNtFtmj6JytmWgUuIR1d+o3UcgUuxRPvT0r3U9zyY8TyDNyl4Q4kwqk1vfJXx8j
 qdv00Fheg7/VfFRZ05aBRNrZEKqayxCSjiRi3sSeA7FOVm6sNxjjsgpQX92rEaDq
 sWovkl+RtEsv0djHN86cRJzxkTc9Jq4aLrufGSjedeo/
 -----END CERTIFICATE-----`;
-
-const jwksUrl = 'https://dev-1qmhu0bnekmqemep.us.auth0.com/.well-known/jwks.json'
 
 export async function handler(event) {
   try {
@@ -63,33 +60,17 @@ export async function handler(event) {
   }
 }
 
-// async function verifyToken(authHeader) {
-//   if (!authHeader) throw new Error('No authorization header')
-
-//   if (!authHeader.toLowerCase().startsWith('bearer ')) {
-//     throw new Error('Invalid authorization header')
-//   }
-
-
-//   const token = getToken(authHeader)
-//   const jwt = jsonwebtoken.decode(token, { complete: true })
-
-//   return jsonwebtoken.verify(token, certificate, { algorithms: ['RS256'] })
-// }
-
 async function verifyToken(authHeader) {
-  const token = getToken(authHeader);
-  // const jwt: Jwt = decode(token, { complete: true }) as Jwt
+  if (!authHeader) throw new Error('No authorization header')
 
-  let certif;
-  try {
-    const res = await Axios.get(jwksUrl);
-    certif = certificate;
-  } catch (err) {
-    console.log(err);
+  if (!authHeader.toLowerCase().startsWith('bearer ')) {
+    throw new Error('Invalid authorization header')
   }
 
-  return jsonwebtoken.verify(token, certif, { algorithms: ['RS256']});
+  const token = getToken(authHeader)
+  const jwt = jsonwebtoken.decode(token, { complete: true })
+
+  return jsonwebtoken.verify(token, certificate, { algorithms: ['RS256'] })
 }
 
 function getToken(authHeader) {

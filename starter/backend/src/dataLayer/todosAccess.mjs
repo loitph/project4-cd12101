@@ -2,8 +2,6 @@ import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb'
 import AWSXRay from 'aws-xray-sdk-core';
 import { createLogger } from '../utils/logger.mjs'
-import { S3Client } from '@aws-sdk/client-s3';
-
 
 const logger = createLogger('dataLayer')
 

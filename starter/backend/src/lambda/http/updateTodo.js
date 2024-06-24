@@ -5,22 +5,18 @@ import {createLogger} from '../../utils/logger.mjs'
 import {updateTodo} from "../../bussinessLogic/todos.mjs";
 import {getUserId} from "../utils.mjs";
 
-
-const logger = createLogger('http')
-
+const logger = createLogger('http');
 export const handler = middy()
   .use(httpErrorHandler())
   .use(cors({
     credentials: true
   }))
   .handler(async (event) => {
+    const userId = getUserId(event);
     const updateRequest = JSON.parse(event.body);
-    const todoId = event.pathParameters.todoId
-    const userId = getUserId(event)
+    const todoId = event.pathParameters.todoId;
 
-    logger.info(`Processing updateTodo ${JSON.stringify(updateRequest, null, 2)}, id: ${todoId}`)
-
-
+    logger.info(`[L] > Updating todo infomation ${JSON.stringify(updateRequest, null, 2)}, id: ${todoId}`);
     await updateTodo(userId, todoId, updateRequest);
 
     return {

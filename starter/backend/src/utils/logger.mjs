@@ -11,5 +11,5 @@ export function createLogger(loggerName) {
     format: winston.format.json(),
     defaultMeta: { name: loggerName },
     transports: [new winston.transports.Console()]
-  })
+  });
 }

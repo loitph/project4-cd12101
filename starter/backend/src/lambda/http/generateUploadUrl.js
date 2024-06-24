@@ -6,26 +6,22 @@ import {setAttachmentUrl} from '../../bussinessLogic/todos.mjs'
 import {getUserId} from "../utils.mjs";
 import {getFormattedUrl, getUploadUrl} from "../../fileStoreage/attachmentUtils.mjs";
 
-const logger = createLogger('http')
-
-
+const logger = createLogger('http');
 export const handler = middy()
   .use(httpErrorHandler())
   .use(cors({
-    credentials: true
+    credentials: true,
   }))
   .handler(async (event) => {
     const todoId = event.pathParameters.todoId;
-    logger.info(`Uploading attachment for ${todoId}`)
+    logger.info(`[L] > Attachment are uploading with id: ${todoId}`);
 
-    const image = JSON.parse(event.body)
     const userId = getUserId(event);
+    const image = JSON.parse(event.body);
+    const attachmentUrl = getFormattedUrl(todoId);
+    const uploadUrl = await getUploadUrl(todoId);
 
-    const attachmentUrl = getFormattedUrl(todoId)
-    const uploadUrl = await getUploadUrl(todoId)
-
-    await setAttachmentUrl(userId, todoId, image, attachmentUrl)
-
+    await setAttachmentUrl(userId, todoId, image, attachmentUrl);
     return {
       statusCode: 201, body: JSON.stringify({
         uploadUrl

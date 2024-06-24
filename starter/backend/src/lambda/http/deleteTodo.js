@@ -5,21 +5,18 @@ import {createLogger} from '../../utils/logger.mjs'
 import {deleteTodo} from '../../bussinessLogic/todos.mjs'
 import {getUserId} from "../utils.mjs";
 
-
-const logger = createLogger('http')
-
+const logger = createLogger('http');
 export const handler = middy()
   .use(httpErrorHandler())
   .use(cors({
-    credentials: true
+    credentials: true,
   }))
   .handler(async (event) => {
-    const todoId = event.pathParameters.todoId
-    logger.info(`Processing deleteTodo ${todoId}`)
-    const userId = getUserId(event)
+    const todoId = event.pathParameters.todoId;
+    logger.info(`[L] > Deleting todo ${todoId}`);
+    const userId = getUserId(event);
 
-    await deleteTodo(userId, todoId)
-
+    await deleteTodo(userId, todoId);
     return {
       statusCode: 204
     }
