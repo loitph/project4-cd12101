@@ -1,9 +1,9 @@
 import middy from "@middy/core";
 import cors from '@middy/http-cors'
 import httpErrorHandler from "@middy/http-error-handler";
-import {createLogger} from '../../utils/logger.mjs'
-import {updateTodo} from "../../bussinessLogic/todos.mjs";
-import {getUserId} from "../utils.mjs";
+import { createLogger } from '../../utils/logger.mjs'
+import { updateTodo } from "../../bussinessLogic/todosLogic.mjs";
+import { getUserId } from "../utils.mjs";
 
 const logger = createLogger('http');
 export const handler = middy()
@@ -16,7 +16,7 @@ export const handler = middy()
     const updateRequest = JSON.parse(event.body);
     const todoId = event.pathParameters.todoId;
 
-    logger.info(`[L] > Updating todo infomation ${JSON.stringify(updateRequest, null, 2)}, id: ${todoId}`);
+    logger.info(`[L] > Updating todo data: ${JSON.stringify(updateRequest)} - for todo id: ${todoId}`);
     await updateTodo(userId, todoId, updateRequest);
 
     return {

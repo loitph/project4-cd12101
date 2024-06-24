@@ -15,7 +15,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { useNavigate } from 'react-router-dom'
 import { deleteTodo, getTodos, patchTodo } from '../api/todos-api'
 import { NewTodoInput } from './NewTodoInput'
-import {AUTH0_AUDIENCE_ENDPOINT} from "../config";
+import { AUTH0_AUDIENCE_ENDPOINT } from "../config";
 
 const audience = AUTH0_AUDIENCE_ENDPOINT
 

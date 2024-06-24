@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import {API_ENDPOINT} from "../config";
+import { API_ENDPOINT } from "../config";
 
 export async function getTodos(idToken) {
   console.log('Fetching todos')

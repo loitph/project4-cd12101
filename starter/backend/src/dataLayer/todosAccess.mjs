@@ -15,7 +15,7 @@ export class TodosAccess {
   }
 
   async getByUserId(userId) {
-    logger.info(`Getting all TODOs for user ${userId}`);
+    logger.info(`[L] > Getting list data for user id: ${userId}`);
 
     const params = {
       TableName: this.todosTable,
@@ -30,7 +30,7 @@ export class TodosAccess {
   }
 
   async create(createTodoRequest){
-    logger.info(`Creating a TODO with id ${createTodoRequest.todoId} ${JSON.stringify(createTodoRequest, null, 2)}`);
+    logger.info(`[L] > Creating todo has an id: ${createTodoRequest.todoId} ${JSON.stringify(createTodoRequest, null, 2)}`);
 
     await this.dynamoDbClient.put({
       TableName: this.todosTable,
@@ -41,7 +41,7 @@ export class TodosAccess {
   }
 
   async update(userId, todoId, updateTodoRequest = {}) {
-    logger.info(`Updating ${todoId} with ${JSON.stringify(updateTodoRequest, null, 2)}`)
+    logger.info(`[L] > Updating todo id: ${todoId} - ${JSON.stringify(updateTodoRequest, null, 2)}`)
     const { name, dueDate, done } = updateTodoRequest
     const params = {
       TableName: this.todosTable,
@@ -64,15 +64,26 @@ export class TodosAccess {
     await this.dynamoDbClient.update(params);
   }
 
-  async setAttachmentUrl(userId, todoId, image, attachmentUrl) {
-    logger.info(`set attachmentUrl for ${todoId} ${attachmentUrl}`)
-    const params = {
+  async delete(userId, todoId) {
+    logger.info(`[L] > Removing TODO id: ${todoId} - belong to user: ${userId}`);
+    await this.dynamoDbClient.delete({
       TableName: this.todosTable,
       Key: {
         userId,
         todoId
-      },
+      }
+    });
+  }
+
+  async setAttachmentUrl(userId, todoId, image, attachmentUrl) {
+    logger.info(`[L] > Setting url attachment for todo id: ${todoId} ${attachmentUrl}`)
+    const params = {
+      TableName: this.todosTable,
       UpdateExpression: 'set image = :image, attachmentUrl = :attachmentUrl',
+      Key: {
+        userId,
+        todoId
+      },
       ExpressionAttributeValues: {
         ':attachmentUrl': attachmentUrl,
         ':image': image,
@@ -81,16 +92,5 @@ export class TodosAccess {
     };
 
     await this.dynamoDbClient.update(params);
-  }
-
-  async delete(userId, todoId) {
-    logger.info(`Removing TODO: ${todoId} for user: ${userId}`);
-    await this.dynamoDbClient.delete({
-      TableName: this.todosTable,
-      Key: {
-        userId,
-        todoId
-      }
-    });
   }
 }

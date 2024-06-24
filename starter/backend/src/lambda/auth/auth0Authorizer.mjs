@@ -1,8 +1,7 @@
 import jsonwebtoken from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger.mjs'
 
-const logger = createLogger('auth')
-
+const logger = createLogger('auth');
 const certificate = `-----BEGIN CERTIFICATE-----
 MIIDHTCCAgWgAwIBAgIJOW+hxRZozb/NMA0GCSqGSIb3DQEBCwUAMCwxKjAoBgNV
 BAMTIWRldi0xcW1odTBibmVrbXFlbWVwLnVzLmF1dGgwLmNvbTAeFw0yNDA2MjIw
@@ -26,7 +25,7 @@ sWovkl+RtEsv0djHN86cRJzxkTc9Jq4aLrufGSjedeo/
 export async function handler(event) {
   try {
     const jwtToken = await verifyToken(event.authorizationToken)
-    logger.info('User was authorized', jwtToken)
+    logger.info('[L] > Authorized successfully - token: ', jwtToken)
 
     return {
       principalId: jwtToken.sub,
@@ -42,7 +41,7 @@ export async function handler(event) {
       }
     }
   } catch (e) {
-    logger.error('User not authorized', { error: e.message })
+    logger.error('[L] > Authorized failed - message: ', { error: e.message })
 
     return {
       principalId: 'user',
@@ -61,26 +60,26 @@ export async function handler(event) {
 }
 
 async function verifyToken(authHeader) {
-  if (!authHeader) throw new Error('No authorization header')
-
-  if (!authHeader.toLowerCase().startsWith('bearer ')) {
-    throw new Error('Invalid authorization header')
+  if (!authHeader) {
+    throw new Error('Authorized header was not found');
   }
 
-  const token = getToken(authHeader)
-  const jwt = jsonwebtoken.decode(token, { complete: true })
+  if (!authHeader.toLowerCase().startsWith('bearer ')) {
+    throw new Error('Authorized header is incorrect');
+  }
 
-  return jsonwebtoken.verify(token, certificate, { algorithms: ['RS256'] })
+  const token = getToken(authHeader);
+  return jsonwebtoken.verify(token, certificate, { algorithms: ['RS256'] });
 }
 
 function getToken(authHeader) {
-  if (!authHeader) throw new Error('No authentication header')
+  if (!authHeader) {
+    throw new Error('Authorized header was not found');
+  }
 
-  if (!authHeader.toLowerCase().startsWith('bearer '))
-    throw new Error('Invalid authentication header')
+  if (!authHeader.toLowerCase().startsWith('bearer ')) {
+    throw new Error('Authorized header is incorrect');
+  }
 
-  const split = authHeader.split(' ')
-  const token = split[1]
-
-  return token
+  return authHeader.split(' ')[1];
 }
